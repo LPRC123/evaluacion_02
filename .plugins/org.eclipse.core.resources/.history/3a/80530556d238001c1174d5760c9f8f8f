@@ -1,0 +1,16 @@
+package com.cibertec.service;
+
+import java.util.List;
+
+import com.cibertec.entity.Proveedor;
+
+public interface ProveedorService {
+	
+	public abstract Proveedor insertaActualizaProveedor(Proveedor obj);
+	
+	public abstract List<Proveedor> listaProveedor();
+	public abstract List<Proveedor> listaProveedorPoridProveedor( String idProveedor);
+	public abstract List<Proveedor> listaProveedorPorContacto( String contacto);
+	public abstract List<Proveedor> listaProveedorPoridProveedorContacto(String idProveedor, String contacto);
+
+}

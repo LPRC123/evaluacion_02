@@ -1,0 +1,164 @@
+package com.cibertec.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.cibertec.entity.Proveedor;
+import com.cibertec.service.ProveedorService;
+
+public class ProveedorController {
+
+	
+	
+	@Autowired
+	private ProveedorService proveedorService;
+
+	@GetMapping
+	@ResponseBody
+	public ResponseEntity<List<Proveedor>> listaProveedor() {
+		List<Proveedor> lista = proveedorService.listaProveedor();
+		return ResponseEntity.ok(lista);
+	}
+
+	@PostMapping
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> insertaProveedor(@RequestBody Proveedor obj) {
+		Map<String, Object> salida = new HashMap<>();
+		try {
+			Proveedor objSalida = proveedorService.insertaActualizaProveedor(obj);
+			if (objSalida == null) {
+				salida.put("mensaje", Constantes.MENSAJE_REG_ERROR);
+			} else {
+				salida.put("mensaje", Constantes.MENSAJE_REG_EXITOSO);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			salida.put("mensaje", Constantes.MENSAJE_REG_ERROR);
+		}
+		return ResponseEntity.ok(salida);
+	}
+
+	
+	@GetMapping("/poridProveedor/{paramidProveedor}")
+	@ResponseBody
+	public ResponseEntity<List<Proveedor>> listaProveedorPoridProveedor(@PathVariable("paramidProveedor")String idProveedor) {
+		List<Proveedor> lista = proveedorService.listaProveedorPoridProveedor(idProveedor);
+		return ResponseEntity.ok(lista);
+	}
+	
+	
+	@GetMapping("/porContacto/{paramContacto}")
+	@ResponseBody
+	public ResponseEntity<List<Proveedor>> listaDocentePorContacto(@PathVariable("paramContacto")String contacto) {
+		List<Proveedor> lista = proveedorService.listaProveedorPorContacto(contacto);
+		return ResponseEntity.ok(lista);
+	}
+	
+	
+	
+	
+	
+	
+	
+	@GetMapping("/poridUbigeo/{paramidUbigeo}/{paramidUbigeo}")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> listaProveedorPoridUbigeo(
+										@PathVariable("paramDni")String dni,
+										@PathVariable("paramNombre")String nombre) {
+		
+		Map<String, Object> salida = new HashMap<String, Object>();
+		try {
+			List<Docente> lista = docenteService .listaDocentePorDniNombre(dni, "%"+nombre+"%");
+			if(CollectionUtils.isEmpty(lista)){
+				salida.put("mensaje", "No existe elementos para la consulta");
+			}else {
+				salida.put("lista", lista);
+				salida.put("mensaje", "Se tiene " + lista.size() + " elementos");
+			}
+		} catch (Exception e) {
+			salida.put("mensaje", "Error : " + e.getMessage());
+		}
+		
+		return ResponseEntity.ok(salida);
+	}
+	
+	
+	@GetMapping("/porDniNombreConParametros")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> listaPrDniNombreConParametros(
+			@RequestParam(value = "nombre", required = false, defaultValue = "") String nombre,
+			@RequestParam(value = "dni", required = false, defaultValue = "") String dni) {
+		
+		Map<String, Object> salida = new HashMap<String, Object>();
+		try {
+			List<Docente> lista = docenteService .listaDocentePorDniNombre(dni, "%"+nombre+"%");
+			if(CollectionUtils.isEmpty(lista)){
+				salida.put("mensaje", "No existe elementos para la consulta");
+			}else {
+				salida.put("lista", lista);
+				salida.put("mensaje", "Se tiene " + lista.size() + " elementos");
+			}
+		} catch (Exception e) {
+			salida.put("mensaje", "Error : " + e.getMessage());
+		}
+		
+		return ResponseEntity.ok(salida);
+	}
+	
+	@GetMapping("/porDniNombreUbigeoConParametros")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> listaPrDniNombreUbigeoConParametros(
+			@RequestParam(value = "nombre", required = false, defaultValue = "") String nombre,
+			@RequestParam(value = "dni", required = false, defaultValue = "") String dni,
+			@RequestParam(value = "idUbigeo", required = false, defaultValue = "0") int idUbigeo) {
+		
+		Map<String, Object> salida = new HashMap<String, Object>();
+		try {
+			List<Docente> lista = docenteService.listaDocentePorDniNombreUbigeo(dni, "%"+nombre+"%", idUbigeo);
+			if(CollectionUtils.isEmpty(lista)){
+				salida.put("mensaje", "No existe elementos para la consulta");
+			}else {
+				salida.put("lista", lista);
+				salida.put("mensaje", "Se tiene " + lista.size() + " elementos");
+			}
+		} catch (Exception e) {
+			salida.put("mensaje", "Error : " + e.getMessage());
+		}
+		
+		return ResponseEntity.ok(salida);
+	}
+	
+	@GetMapping("/porDniNombreUbigeoConJson")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> listaPrDniNombreUbigeoConParametros(
+							@RequestBody FiltroDocente filtro) {
+		
+		Map<String, Object> salida = new HashMap<String, Object>();
+		try {
+			filtro.setNombre("%"+filtro.getNombre()+"%");
+			List<Docente> lista = docenteService.listaPorFiltro(filtro);
+			if(CollectionUtils.isEmpty(lista)){
+				salida.put("mensaje", "No existe elementos para la consulta");
+			}else {
+				salida.put("lista", lista);
+				salida.put("mensaje", "Se tiene " + lista.size() + " elementos");
+			}
+		} catch (Exception e) {
+			salida.put("mensaje", "Error : " + e.getMessage());
+		}
+		
+		return ResponseEntity.ok(salida);
+	}
+	
+	
+	
+}

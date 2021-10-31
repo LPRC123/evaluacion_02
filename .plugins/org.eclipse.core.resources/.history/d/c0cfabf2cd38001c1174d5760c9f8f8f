@@ -1,0 +1,52 @@
+package com.cibertec.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.cibertec.entity.Proveedor;
+
+public interface ProveedorRepository extends JpaRepository<Proveedor, Integer>{
+
+	public List<Proveedor> findByidProveedor(String idProveedor );
+	public List<Proveedor> findByContactoContaining(String contacto);
+	
+	
+	//jpql
+
+
+	
+	
+	@Query("select d from Proveedor d where "
+			+ "( :p_idProveedor is '' or d.idProveedor = :p_idProveedor ) and "
+			+ "( :p_contacto is '' or d.contacto like :p_contacto )")
+		public abstract List<Proveedor> listaProveedorPoridProveedorContacto(
+							 	@Param("p_idProveedor") String idProveedor, 
+							 	@Param("p_contacto") String contacto);
+
+
+		@Query("select d from Proveedor d where "
+							+ "( :p_idProveedor is '' or d.idProveedor = :p_idProveedor ) and "
+							+ "( :p_contacto is '' or d.contacto like :p_contacto ) and "
+							+ "( :p_ubi is 0  or d.ubigeo.idUbigeo = :p_ubi ) ")
+		public abstract List<Proveedor> listaDocentePoridProveedorContactoUbigeo(
+					 	@Param("p_idProveedor") String idProveedor, 
+					 	@Param("p_Contacto") String contacto,
+					 	@Param("p_ubi") int idUbigeo);
+
+
+@Query("select d from Docente d where "
++ "( :#{#fil.dni} is '' or d.dni = :#{#fil.dni} ) and "
++ "( :#{#fil.nombre} is '' or d.nombre like :#{#fil.nombre} ) and "
++ "( :#{#fil.idUbigeo} is 0  or d.ubigeo.idUbigeo = :#{#fil.idUbigeo} ) ")
+public abstract List<Docente> listaPorFiltro(@Param("fil")FiltroDocente filtro);
+
+
+
+
+
+}
+
+

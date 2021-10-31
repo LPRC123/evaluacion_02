@@ -1,0 +1,13 @@
+package com.cibertec.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.cibertec.entity.Proveedor;
+
+public interface ProveedorRepository extends JpaRepository<Proveedor, Integer>{
+
+	public List<Proveedor> findByidProveedor(String idProveedor );
+	public List<Proveedor> findByContacto(String contacto);
+}
